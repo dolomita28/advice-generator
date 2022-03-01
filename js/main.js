@@ -1,28 +1,30 @@
 const adviceId = document.querySelector('.advice-id');
 const advice = document.querySelector('.advice');
 const dice = document.querySelector('.dice-lnk');
-
-
-
-// generate random id
-const getRandomId = () => {
-    return Math.floor(Math.random() * 150);
+const apiUrl = 'https://api.adviceslip.com/advice';
+// print advice message
+const printAdvice = (data) => {
+    adviceId.innerHTML = data.slip.id;
+    advice.innerHTML = data.slip.advice;
 }
-
+// case error messages
+const printError = (msg) => {
+    advice.innerHTML = msg;
+}
 // fetch api
-const getAdvice = async () => {
-    const id = getRandomId();
-    console.log('this is the id', id);
-    const result = await fetch(`https://api.adviceslip.com/advice/${id}`);
-    result.json().then(data => {
-        adviceId.innerHTML = data.slip['id'];
-        advice.innerHTML = data.slip['advice'];
-        
-    });
+const getAdvice = async () => {    
+    try{
+        const result = await fetch(apiUrl);
+        result.json().then(data => {
+            printAdvice(data);                        
+        })
+    }
+    catch(err){
+        printError(err.message);
+    }  
 }
-
-// click on dice
+// handle click on dice
 dice.addEventListener('click',getAdvice);
 
-//starting point
+//starting
 getAdvice();
